@@ -1,0 +1,18 @@
+# =============================================
+# Email Triage Agent — Python Dependencies
+# =============================================
+# Install with: pip install -r requirements.txt
+
+# Gmail API (OAuth2 authentication + readonly access)
+google-api-python-client>=2.100.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.2.0
+
+# Gemini AI — unified SDK (replaces deprecated google-generativeai)
+google-genai>=1.0.0
+
+# HTTP requests (Slack webhook POST)
+requests>=2.31.0
+
+# Environment variables from .env file
+python-dotenv>=1.0.0

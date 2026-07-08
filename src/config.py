@@ -109,7 +109,7 @@ GMAIL_SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 # Maximum emails to fetch per label (INBOX / SPAM) per account per run.
 # 50 is a good balance — covers most hourly volumes without being slow.
 # Increase if you get 100+ emails per hour.
-MAX_EMAILS_PER_LABEL = 50
+MAX_EMAILS_PER_LABEL = 15
 
 
 # ══════════════════════════════════════════════════════════════

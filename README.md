@@ -1,6 +1,6 @@
 # 📬 AI Email Triage Agent (Gmail → Gemini AI → Slack)
 
-A Python automation that monitors **2 Gmail accounts** every hour (both Inbox and Spam), uses **Google Gemini AI** to classify emails by importance, and sends formatted **Slack notifications** for anything that matters — so you never miss an important email again.
+A Python automation that monitors **2 Gmail accounts** every hour (both Inbox and Spam), uses **Google Gemini AI** to classify emails by importance, and sends formatted **Slack notifications** for anything that matters, so you never miss an important email again.
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)

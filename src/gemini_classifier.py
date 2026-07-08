@@ -242,18 +242,38 @@ def classify_with_retry(
 
         except Exception as exc:
             last_exception = exc
-
-            # --- Calculate exponential backoff delay ------------------
-            # Attempt 1 → 2s, Attempt 2 → 4s, Attempt 3 → 8s, …
-            delay = 2 ** attempt
-            logger.warning(
-                "Gemini classify attempt %d/%d failed: %s — "
-                "retrying in %ds…",
-                attempt,
-                max_retries,
-                exc,
-                delay,
+            exc_str = str(exc)
+            exc_name = type(exc).__name__
+            is_rate_limit = (
+                "ResourceExhausted" in exc_name or
+                "ResourceExhausted" in exc_str or
+                "429" in exc_str or
+                "quota" in exc_str.lower()
             )
+
+            if is_rate_limit:
+                # If rate limited, sleep longer (e.g., 30s, 60s, 90s) to let the quota reset
+                delay = 30 * attempt
+                logger.warning(
+                    "Gemini API rate limit hit (429 / ResourceExhausted): %s — "
+                    "backing off for %ds before retry %d/%d…",
+                    exc,
+                    delay,
+                    attempt,
+                    max_retries,
+                )
+            else:
+                # --- Calculate exponential backoff delay ──────────────────
+                # Attempt 1 → 2s, Attempt 2 → 4s, Attempt 3 → 8s, …
+                delay = 2 ** attempt
+                logger.warning(
+                    "Gemini classify attempt %d/%d failed: %s — "
+                    "retrying in %ds…",
+                    attempt,
+                    max_retries,
+                    exc,
+                    delay,
+                )
             time.sleep(delay)
 
     # ---- All retries exhausted — return safe default -----------------

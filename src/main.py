@@ -43,6 +43,8 @@ from config import (
     GEMINI_API_KEY,
     LOG_LEVEL,
     DEDUP_RETENTION_DAYS,
+    MAX_GEMINI_CALLS_PER_RUN,
+    SUMMARIZE_RULE_MATCHES,
 )
 from gmail_client import fetch_all_new_emails
 from gemini_classifier import classify_with_retry, generate_summary_only
@@ -230,6 +232,12 @@ def run_triage(dry_run: bool = False) -> dict:
 
         # ── Process each Gmail account ───────────────────────
         for account_index, account in enumerate(GMAIL_ACCOUNTS, start=1):
+            if stats["gemini_calls"] >= MAX_GEMINI_CALLS_PER_RUN:
+                logger.warning(
+                    f"   ⚠️ Gemini API call cap ({MAX_GEMINI_CALLS_PER_RUN}) reached. Skipping remaining accounts."
+                )
+                break
+
             account_label = account["label"]
             logger.info(f"\n📧 Processing account {account_index}: {account_label}")
             logger.info("-" * 50)
@@ -256,6 +264,7 @@ def run_triage(dry_run: bool = False) -> dict:
                     continue
 
                 stats["processed"] += 1
+                start_calls = stats["gemini_calls"]
 
                 # ── Apply rule-based pre-filter ──────────────
                 rule_result = apply_rule_filter(email)
@@ -268,21 +277,34 @@ def run_triage(dry_run: bool = False) -> dict:
                     important = True
                     priority = rule_result["priority"]
 
-                    # Get a summary from Gemini (even though rules already flagged it,
-                    # we want a nice AI-generated summary for the Slack message)
-                    try:
-                        summary = generate_summary_only(
-                            email.get("sender", ""),
-                            email.get("subject", ""),
-                            email.get("snippet", ""),
-                        )
-                        stats["gemini_calls"] += 1
-                    except Exception:
-                        # Fallback summary if Gemini fails
-                        summary = f"{rule_result['reason']}. {email.get('subject', '')}"
+                    # Get a summary from Gemini if enabled and under the cap
+                    if SUMMARIZE_RULE_MATCHES:
+                        if stats["gemini_calls"] >= MAX_GEMINI_CALLS_PER_RUN:
+                            logger.warning("   ⚠️ Gemini API call cap reached. Skipping AI summary generation.")
+                            summary = f"{rule_result['reason']}. {email.get('snippet', email.get('subject', ''))}"
+                        else:
+                            try:
+                                summary = generate_summary_only(
+                                    email.get("sender", ""),
+                                    email.get("subject", ""),
+                                    email.get("snippet", ""),
+                                )
+                                stats["gemini_calls"] += 1
+                            except Exception:
+                                # Fallback summary if Gemini fails
+                                summary = f"{rule_result['reason']}. {email.get('snippet', email.get('subject', ''))}"
+                    else:
+                        summary = f"{rule_result['reason']}. {email.get('snippet', email.get('subject', ''))}"
 
                 else:
                     # ── Rules didn't match → ask Gemini ──────
+                    if stats["gemini_calls"] >= MAX_GEMINI_CALLS_PER_RUN:
+                        logger.warning(
+                            f"   ⚠️ Gemini API call cap ({MAX_GEMINI_CALLS_PER_RUN}) reached. "
+                            "Stopping run early to save API quota. Remaining emails will be triaged next run."
+                        )
+                        break
+
                     logger.debug(f"   🤖 Calling Gemini for: {email.get('subject', '(no subject)')}")
 
                     gemini_result = classify_with_retry(
@@ -341,9 +363,10 @@ def run_triage(dry_run: bool = False) -> dict:
                 # ── Mark as processed (regardless of importance) ──
                 store.mark_processed(email["id"], account_label, important)
 
-                # Add a 4 to 5-second sleep to ensure you stay under 15 requests per minute
-                print("Sleeping to avoid rate limits...")
-                time.sleep(4.5)
+                # Add a 4 to 5-second sleep only if a Gemini API call was made
+                if stats["gemini_calls"] > start_calls:
+                    print("Sleeping to avoid rate limits...")
+                    time.sleep(4.5)
 
         # ── Cleanup old entries ──────────────────────────────
         store.cleanup_old_entries(days=DEDUP_RETENTION_DAYS)

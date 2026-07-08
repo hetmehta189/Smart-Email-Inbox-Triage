@@ -188,6 +188,7 @@ def fetch_messages_from_label(
             request_kwargs: dict = {
                 "userId": "me",
                 "labelIds": [label_id],
+                "q": "is:unread",
                 "maxResults": page_size,
                 "includeSpamTrash": include_spam_trash,
             }

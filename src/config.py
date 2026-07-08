@@ -79,6 +79,15 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 # Slack Incoming Webhook URL — see .env.example for setup instructions.
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 
+# Rate limit safeguards for the Gemini Free Tier
+# Max Gemini API calls in a single run. The script exits cleanly when this is hit,
+# leaving remaining unread emails to be processed in the next run.
+MAX_GEMINI_CALLS_PER_RUN = int(os.getenv("MAX_GEMINI_CALLS_PER_RUN", "15"))
+
+# When True, calls Gemini to get a summary for VIP and keyword matches.
+# When False, uses the email snippet directly as the summary, saving API quota.
+SUMMARIZE_RULE_MATCHES = os.getenv("SUMMARIZE_RULE_MATCHES", "False").lower() in ("true", "1", "yes")
+
 
 # ══════════════════════════════════════════════════════════════
 # FILE PATHS

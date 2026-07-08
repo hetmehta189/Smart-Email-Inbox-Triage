@@ -1,4 +1,4 @@
-# 📬 AI Email Triage Agent — Gmail → Gemini AI → Slack
+# 📬 AI Email Triage Agent (Gmail → Gemini AI → Slack)
 
 A Python automation that monitors **2 Gmail accounts** every hour (both Inbox and Spam), uses **Google Gemini AI** to classify emails by importance, and sends formatted **Slack notifications** for anything that matters — so you never miss an important email again.
 
@@ -10,49 +10,49 @@ A Python automation that monitors **2 Gmail accounts** every hour (both Inbox an
 
 ## ✨ Features
 
-- 📧 **Dual Gmail Monitoring** — Scans 2 Gmail accounts (Inbox AND Spam folders)
-- 🧠 **Smart Classification** — Rule-based pre-filter + Gemini AI for uncertain emails
-- 💬 **Slack Notifications** — Rich, formatted notifications via Incoming Webhook
-- 🔁 **Deduplication** — SQLite database ensures no duplicate notifications ever
-- ⏰ **Hourly Schedule** — Run via cron, Task Scheduler, or Antigravity
-- 🛡️ **Spam Rescue** — Catches legitimate emails wrongly flagged as spam
-- ✏️ **Easily Customizable** — VIP senders, keywords, and AI prompt all in one file
-- 🔒 **Read-Only** — Only reads emails, never modifies or sends anything
+- 📧 **Dual Gmail Monitoring**: Scans 2 Gmail accounts (Inbox AND Spam folders)
+- 🧠 **Smart Classification**: Rule-based pre-filter + Gemini AI for uncertain emails
+- 💬 **Slack Notifications**: Rich, formatted notifications via Incoming Webhook
+- 🔁 **Deduplication**: SQLite database ensures no duplicate notifications ever
+- ⏰ **Hourly Schedule**: Run via cron, Task Scheduler, or Antigravity
+- 🛡️ **Spam Rescue**: Catches legitimate emails wrongly flagged as spam
+- ✏️ **Easily Customizable**: VIP senders, keywords, and AI prompt all in one file
+- 🔒 **Read-Only**: Only reads emails, never modifies or sends anything
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐      ┌─────────────────┐
+┌──────────────────┐      ┌──────────────────┐
 │  Gmail Account 1 │      │  Gmail Account 2 │
 │  (OAuth2 Token)  │      │  (OAuth2 Token)  │
-└────────┬─────────┘      └────────┬─────────┘
+└────────┬─────────┘      └─────────┬────────┘
          │  INBOX + SPAM            │  INBOX + SPAM
          └───────────┬──────────────┘
                      │
-              ┌──────▼──────┐
+              ┌──────▼───────┐
               │ gmail_client │  Fetch unread emails
               └──────┬───────┘
                      │
-              ┌──────▼──────┐
+              ┌──────▼───────┐
               │ dedupe_store │  SQLite: skip duplicates
               └──────┬───────┘
                      │
-              ┌──────▼──────────────┐
+              ┌──────▼───────────────┐
               │  Rule-Based Filter   │  VIP senders + keywords
               └──────┬───────────────┘
                      │
-           ┌─────────┴─────────┐
+           ┌─────────┴───────────┐
            │ Important           │ Uncertain
            │ (skip Gemini)       │
-           │              ┌──────▼──────┐
+           │              ┌──────▼───────┐
            │              │ Gemini AI    │  classify + summarize
            │              └──────┬───────┘
            │                     │
            └─────────┬───────────┘
                      │ Important emails only
-              ┌──────▼──────┐
+              ┌──────▼───────┐
               │ Slack        │  Formatted notification
               │ Webhook      │  via Block Kit + mrkdwn
               └──────────────┘

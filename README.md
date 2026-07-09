@@ -10,14 +10,14 @@ A Python automation that monitors **2 Gmail accounts** every hour (both Inbox an
 
 ## ✨ Features
 
-- 📧 **Dual Gmail Monitoring**: Scans 2 Gmail accounts (Inbox AND Spam folders)
-- 🧠 **Smart Classification**: Rule-based pre-filter + Gemini AI for uncertain emails
-- 💬 **Slack Notifications**: Rich, formatted notifications via Incoming Webhook
-- 🔁 **Deduplication**: SQLite database ensures no duplicate notifications ever
-- ⏰ **Hourly Schedule**: Run via cron, Task Scheduler, or Antigravity
-- 🛡️ **Spam Rescue**: Catches legitimate emails wrongly flagged as spam
-- ✏️ **Easily Customizable**: VIP senders, keywords, and AI prompt all in one file
-- 🔒 **Read-Only**: Only reads emails, never modifies or sends anything
+- 📧 **Dual Gmail Monitoring**: Scans 2 Gmail accounts (Inbox AND Spam folders).
+- 🧠 **Smart Classification**: Rule-based pre-filter + Gemini AI for uncertain emails.
+- 💬 **Slack Notifications**: Rich, formatted notifications via Incoming Webhook.
+- 🔁 **Deduplication**: SQLite database ensures no duplicate notifications ever.
+- ⏰ **Hourly Schedule**: Run via cron, Task Scheduler, or Antigravity.
+- 🛡️ **Spam Rescue**: Catches legitimate emails wrongly flagged as spam.
+- ✏️ **Easily Customizable**: VIP senders, keywords, and AI prompt all in one file.
+- 🔒 **Read-Only**: Only reads emails, never modifies or sends anything.
 
 ---
 

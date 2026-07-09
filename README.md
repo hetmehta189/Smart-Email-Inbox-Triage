@@ -391,3 +391,6 @@ The rule-based pre-filter minimizes Gemini API calls, keeping you well within fr
 ## 📄 License
 
 MIT License — feel free to use, modify, and share!
+
+
+# Made By Hemal Mistry.

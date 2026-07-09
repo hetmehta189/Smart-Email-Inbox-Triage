@@ -72,9 +72,8 @@ GMAIL_ACCOUNTS = [
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Which Gemini model to use for classification.
-# "gemini-2.0-flash" is fast and cheap — great for classification tasks.
-# Change to "gemini-2.5-flash" for better reasoning (still fast).
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+# "gemini-2.5-flash" is fast and has better reasoning — great for classification tasks.
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Slack Incoming Webhook URL — see .env.example for setup instructions.
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")

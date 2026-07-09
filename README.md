@@ -201,7 +201,7 @@ Edit `.env` with your values:
 GMAIL_ACCOUNT_1_LABEL=your_first_email@gmail.com
 GMAIL_ACCOUNT_2_LABEL=your_second_email@gmail.com
 GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.0-flash
+GEMINI_MODEL=gemini-2.5-flash
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 ```
 
@@ -341,8 +341,8 @@ The AI prompt is at the bottom of `src/config.py` in the `GEMINI_SYSTEM_PROMPT` 
 
 In `.env`, change `GEMINI_MODEL`:
 ```env
-GEMINI_MODEL=gemini-2.5-flash    # Better reasoning, still fast
-GEMINI_MODEL=gemini-1.5-pro      # More powerful, slightly slower
+GEMINI_MODEL=gemini-3.5-flash    # Next-generation fast reasoning model
+GEMINI_MODEL=gemini-2.5-flash    # Current standard reasoning model (default)
 ```
 
 ### Slack Message Format
